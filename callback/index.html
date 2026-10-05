@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ezra Video Uploader — Authorization Callback</title>
+<style>body{font-family:system-ui,sans-serif;max-width:640px;margin:48px auto;padding:0 20px;color:#161823}code{background:#f1f1f2;padding:2px 6px;border-radius:4px;word-break:break-all}.ok{color:#0a7d2c}.err{color:#c00}</style>
+</head>
+<body>
+<h1>Ezra Video Uploader</h1>
+<div id="msg"><p>Processing authorization…</p></div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var code = q.get('code'), err = q.get('error'), msg = document.getElementById('msg');
+  if (code) {
+    msg.innerHTML = '<p class="ok"><strong>Authorization successful.</strong></p>'
+      + '<p>You can now return to Ezra Video Uploader. Authorization code:</p>'
+      + '<p><code>' + code.replace(/[<>&"]/g,'') + '</code></p>'
+      + '<p>This code is single-use and expires quickly; the app exchanges it for an access token.</p>';
+  } else if (err) {
+    msg.innerHTML = '<p class="err"><strong>Authorization failed:</strong> ' + err.replace(/[<>&"]/g,'') + '</p>';
+  } else {
+    msg.innerHTML = '<p>No authorization code found in this callback. If you arrived here directly, nothing needs to be done.</p>';
+  }
+})();
+</script>
+</body>
+</html>
