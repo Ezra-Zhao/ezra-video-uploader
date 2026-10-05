@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f7f8f5" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#101412" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="A publishing tool for creators and educators sharing finished educational videos on TikTok." />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,600&amp;display=swap" rel="stylesheet" />
+  <title>Ezra Video Uploader</title>
+  <style>
+    :root {
+      --page: #f7f8f5;
+      --surface: #ffffff;
+      --surface-soft: #edf3ee;
+      --ink: #14221b;
+      --muted: #526159;
+      --line: #d9e1dc;
+      --accent: #087e5b;
+      --accent-deep: #075b45;
+      --accent-wash: #dff1e8;
+      --warm: #e76542;
+      --shadow: 0 24px 70px rgba(20, 45, 32, 0.09);
+      --max: 1120px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #101412;
+        --surface: #171d19;
+        --surface-soft: #1b2720;
+        --ink: #edf6f0;
+        --muted: #a9b8af;
+        --line: #303b34;
+        --accent: #56caa0;
+        --accent-deep: #8de1bf;
+        --accent-wash: #19372b;
+        --warm: #ff896b;
+        --shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      margin: 0;
+      min-width: 280px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--warm); outline-offset: 4px; border-radius: 3px; }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 84%, transparent);
+      background: color-mix(in srgb, var(--page) 92%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    nav {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 66px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    nav ul {
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 4vw, 42px);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+    nav a:hover, nav a[aria-current="true"] { color: var(--accent); }
+
+    main { overflow: hidden; }
+    .hero {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: min(740px, calc(100svh - 66px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+      gap: clamp(48px, 8vw, 104px);
+      align-items: center;
+      padding: 84px 0 92px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 21px;
+      color: var(--accent-deep);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 3px;
+      border-radius: 10px;
+      background: var(--warm);
+    }
+
+    h1, h2 {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.02;
+      text-wrap: balance;
+    }
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(3.25rem, 7vw, 6.75rem);
+    }
+    .intro {
+      max-width: 670px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+      line-height: 1.62;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 30px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--accent);
+      color: var(--accent-deep);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .contact-link svg { width: 18px; height: 18px; }
+
+    .workflow {
+      position: relative;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 30px 30px 10px 30px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .workflow::after {
+      content: "";
+      position: absolute;
+      right: -14px;
+      top: 38px;
+      width: 28px;
+      height: 90px;
+      border-radius: 5px;
+      background: var(--warm);
+      z-index: -1;
+    }
+    .preview {
+      aspect-ratio: 16 / 10;
+      display: grid;
+      place-items: center;
+      border-radius: 18px 18px 5px 18px;
+      background:
+        linear-gradient(145deg, transparent 52%, color-mix(in srgb, var(--accent) 15%, transparent) 52%),
+        var(--surface-soft);
+      color: var(--accent-deep);
+    }
+    .preview svg { width: 84px; height: 84px; }
+    .workflow-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      padding: 20px 4px 2px;
+    }
+    .workflow-label strong { font-size: 1rem; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .feature-band {
+      border-block: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .features {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 78px;
+    }
+    .features h2 {
+      margin: 0 0 42px;
+      font-size: clamp(2.2rem, 4vw, 3.65rem);
+    }
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: feature;
+    }
+    .feature-list li {
+      counter-increment: feature;
+      min-height: 220px;
+      padding: 8px clamp(22px, 3.5vw, 42px) 8px 0;
+    }
+    .feature-list li + li {
+      padding-left: clamp(22px, 3.5vw, 42px);
+      border-left: 1px solid var(--line);
+    }
+    .feature-list li::before {
+      content: "0" counter(feature);
+      display: block;
+      margin-bottom: 44px;
+      color: var(--warm);
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .feature-list h3 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+      line-height: 1.35;
+    }
+    .feature-list p { margin: 0; color: var(--muted); }
+
+    .policy-section {
+      width: min(920px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 110px 0;
+      scroll-margin-top: 60px;
+    }
+    .policy-section + .policy-section { border-top: 1px solid var(--line); }
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 50px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(2.55rem, 5vw, 4.75rem);
+    }
+    .effective {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+    .policy-grid {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 28px 48px;
+    }
+    .policy-grid h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .policy-grid .copy {
+      color: var(--muted);
+    }
+    .policy-grid p { margin: 0 0 14px; }
+    .policy-grid p:last-child { margin-bottom: 0; }
+    .policy-grid ul { margin: 0; padding-left: 1.3em; }
+    .policy-grid li + li { margin-top: 7px; }
+    .policy-grid a { color: var(--accent-deep); font-weight: 600; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .footer-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 112px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+    footer p { margin: 0; }
+    footer ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; }
+    footer a { color: var(--ink); font-weight: 600; text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 820px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 58px;
+        padding: 72px 0 76px;
+      }
+      h1 { font-size: clamp(3.1rem, 13vw, 5.4rem); }
+      .workflow { width: min(100%, 540px); }
+      .feature-list { grid-template-columns: 1fr; }
+      .feature-list li {
+        min-height: 0;
+        padding: 28px 0 34px;
+      }
+      .feature-list li + li {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+      .feature-list li::before { margin-bottom: 20px; }
+      .policy-grid { grid-template-columns: 150px minmax(0, 1fr); gap: 26px 34px; }
+    }
+
+    @media (max-width: 560px) {
+      nav { width: min(100% - 28px, var(--max)); min-height: 60px; justify-content: center; }
+      nav ul { width: 100%; justify-content: space-between; gap: 12px; }
+      nav a { font-size: 0.82rem; }
+      .hero, .features, .footer-inner { width: calc(100% - 32px); }
+      .policy-section { width: calc(100% - 32px); }
+      .hero { padding-top: 58px; }
+      .intro { margin-top: 20px; }
+      .workflow { padding: 15px; border-radius: 22px 22px 7px 22px; }
+      .workflow::after { display: none; }
+      .workflow-label { align-items: flex-start; flex-direction: column; gap: 4px; padding-top: 16px; }
+      .features { padding-block: 58px; }
+      .features h2 { margin-bottom: 22px; }
+      .policy-section { padding-block: 78px; }
+      .section-head { grid-template-columns: 1fr; gap: 10px; margin-bottom: 40px; }
+      .policy-grid { grid-template-columns: 1fr; gap: 10px; }
+      .policy-grid .copy { margin-bottom: 24px; }
+      .footer-inner { min-height: 134px; align-items: flex-start; justify-content: center; flex-direction: column; gap: 10px; padding-block: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <nav aria-label="Primary navigation">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#terms">Terms</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <section class="hero" id="home" aria-labelledby="home-title">
+      <div>
+        <p class="eyebrow">Built for educational publishing</p>
+        <h1 id="home-title">Ezra Video Uploader</h1>
+        <p class="intro">A simple publishing tool that helps creators and educators schedule and post their finished educational videos to TikTok.</p>
+        <a class="contact-link" href="mailto:ezra777.zhao@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 6.5h17v12h-17z"/><path d="m4 7 8 6 8-6"/></svg>
+          ezra777.zhao@gmail.com
+        </a>
+      </div>
+
+      <div class="workflow" aria-label="Video publishing workflow illustration">
+        <div class="preview">
+          <svg viewBox="0 0 120 120" fill="none" aria-hidden="true">
+            <rect x="22" y="14" width="76" height="92" rx="14" stroke="currentColor" stroke-width="4"/>
+            <path d="M51 45.5v29l24-14.5-24-14.5Z" fill="currentColor"/>
+            <path d="M37 91h46" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="workflow-label">
+          <strong>Review before publishing</strong>
+          <span class="status">Ready when you are</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band" aria-labelledby="features-title">
+      <div class="features">
+        <h2 id="features-title">A clear path from finished file to published lesson.</h2>
+        <ol class="feature-list">
+          <li>
+            <h3>Secure account connection</h3>
+            <p>Connect your TikTok account securely with TikTok Login Kit.</p>
+          </li>
+          <li>
+            <h3>Flexible publishing</h3>
+            <p>Upload finished videos and publish them directly or save them as drafts via the Content Posting API.</p>
+          </li>
+          <li>
+            <h3>Settings you review</h3>
+            <p>Review privacy level, comments, and content flags before anything goes live.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="policy-section" id="privacy" aria-labelledby="privacy-title">
+      <header class="section-head">
+        <h2 id="privacy-title">Privacy Policy</h2>
+        <p class="effective">Effective October 5, 2026</p>
+      </header>
+      <div class="policy-grid">
+        <h3>Overview</h3>
+        <div class="copy">
+          <p>This Privacy Policy explains how Ezra Video Uploader collects, uses, and handles information when you use the publishing service.</p>
+        </div>
+
+        <h3>Information we collect</h3>
+        <div class="copy">
+          <ul>
+            <li><strong>TikTok account authorization information:</strong> your open ID and display name obtained through TikTok Login Kit.</li>
+            <li><strong>Video files:</strong> the finished video files you choose to upload for posting.</li>
+          </ul>
+        </div>
+
+        <h3>How information is used</h3>
+        <div class="copy">
+          <p>We use this information only to provide the publishing service, including connecting your TikTok account, processing the video you select, and carrying out the publishing choices you make.</p>
+        </div>
+
+        <h3>Sharing and sale</h3>
+        <div class="copy">
+          <p>We do not sell your personal information or share it with third parties except TikTok, to which authorization information, posting settings, and selected video files are transmitted only as necessary to provide the publishing service you request.</p>
+        </div>
+
+        <h3>Retention and security</h3>
+        <div class="copy">
+          <p>Information is retained only for as long as reasonably necessary to provide the service or meet applicable legal requirements. Reasonable administrative and technical measures are used to protect information, but no method of transmission or storage can be guaranteed to be completely secure.</p>
+        </div>
+
+        <h3>Your choices</h3>
+        <div class="copy">
+          <p>You may disconnect access through your TikTok account settings. You may also contact us to ask about, correct, or request deletion of information associated with your use of the service, subject to applicable law.</p>
+        </div>
+
+        <h3>Children's privacy</h3>
+        <div class="copy">
+          <p>The service is not directed to children under 13, and we do not knowingly collect personal information from children under 13.</p>
+        </div>
+
+        <h3>Policy changes</h3>
+        <div class="copy">
+          <p>We may update this policy from time to time. Any revised policy will be posted here with an updated effective date.</p>
+        </div>
+
+        <h3>Contact</h3>
+        <div class="copy">
+          <p>For privacy questions or requests, email <a href="mailto:ezra777.zhao@gmail.com">ezra777.zhao@gmail.com</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="policy-section" id="terms" aria-labelledby="terms-title">
+      <header class="section-head">
+        <h2 id="terms-title">Terms of Service</h2>
+        <p class="effective">Effective October 5, 2026</p>
+      </header>
+      <div class="policy-grid">
+        <h3>Acceptance</h3>
+        <div class="copy">
+          <p>By using Ezra Video Uploader, you agree to these Terms of Service. If you do not agree, do not use the service.</p>
+        </div>
+
+        <h3>The service</h3>
+        <div class="copy">
+          <p>Ezra Video Uploader is a publishing tool that helps creators and educators connect a TikTok account, upload finished educational videos, review posting settings, and publish directly or save a draft through TikTok's Content Posting API.</p>
+        </div>
+
+        <h3>Your responsibilities</h3>
+        <div class="copy">
+          <p>You may upload only videos that you own or have all necessary rights and permissions to use and publish. You are responsible for your content, captions, publishing choices, account security, and compliance with TikTok's Community Guidelines and all applicable laws.</p>
+        </div>
+
+        <h3>Acceptable use</h3>
+        <div class="copy">
+          <p>You may not misuse the service, interfere with its operation, attempt unauthorized access, violate another person's rights, or use the service to distribute unlawful or harmful content.</p>
+        </div>
+
+        <h3>Service availability</h3>
+        <div class="copy">
+          <p>Features may change, be suspended, or become unavailable. Access may also depend on TikTok's platform, policies, permissions, and technical availability.</p>
+        </div>
+
+        <h3>No warranty</h3>
+        <div class="copy">
+          <p>The service is provided “as is” and “as available,” without warranties of any kind, express or implied, to the fullest extent permitted by law. We do not warrant uninterrupted, error-free, or secure operation.</p>
+        </div>
+
+        <h3>Limitation of liability</h3>
+        <div class="copy">
+          <p>To the fullest extent permitted by law, Ezra Video Uploader and its operator will not be liable for indirect, incidental, special, consequential, or punitive damages, or for lost data, revenue, profits, or opportunities arising from use of or inability to use the service.</p>
+        </div>
+
+        <h3>Changes to these terms</h3>
+        <div class="copy">
+          <p>We may revise these terms from time to time. Continued use after revised terms are posted means you accept those changes.</p>
+        </div>
+
+        <h3>Contact</h3>
+        <div class="copy">
+          <p>Questions about these terms may be sent to <a href="mailto:ezra777.zhao@gmail.com">ezra777.zhao@gmail.com</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p>© <span id="year">2026</span> Ezra Video Uploader</p>
+      <ul>
+        <li><a href="#privacy">Privacy Policy</a></li>
+        <li><a href="#terms">Terms of Service</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var links = document.querySelectorAll('nav a');
+      var sections = document.querySelectorAll('main > section[id]');
+      if (!('IntersectionObserver' in window)) return;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          links.forEach(function (link) {
+            link.setAttribute('aria-current', link.getAttribute('href') === '#' + entry.target.id ? 'true' : 'false');
+          });
+        });
+      }, { rootMargin: '-20% 0px -68% 0px' });
+      sections.forEach(function (section) { observer.observe(section); });
+    }());
+  </script>
+</body>
+</html>
